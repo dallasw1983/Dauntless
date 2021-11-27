@@ -615,7 +615,7 @@ if(A_Args[1] == "") {
 				if(!FileExist(A_Startup . "\Dauntless-Runner.exe")) {
 					FileInstall, Dauntless-Runner.exe, %A_Startup%\Dauntless-Runner.exe	
 				}
-				Run, %A_Startup%\Dauntless-Runner.exe OnlineUpdated
+				Run, %A_Startup%\Dauntless-Runner.exe OnlineUpdated %OnlineVersion%
 				exitapp
 			}
 		}
