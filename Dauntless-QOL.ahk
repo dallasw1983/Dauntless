@@ -22,6 +22,7 @@ if(A_IsCompiled) {
 	Menu, Tray, NoStandard
 }
 Menu, Tray, Add, Check for update Ver%tmp%, UpdateCheckMenu
+Menu, Tray, Add, Help Window, HelpScreen
 Menu, Tray, Add  ; Creates a separator line.
 Menu, Tray, Add,Reload,ReloadApp
 Menu, Tray, Add,Exit,QuitApp
