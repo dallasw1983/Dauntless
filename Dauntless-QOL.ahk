@@ -15,7 +15,7 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 #InstallKeybdHook
 #InstallMouseHook
 CoordMode, Mouse, Client
-Version := 1.0
+Version := 1
 
 GroupAdd, DauntlessRelated, Dauntless
 GroupAdd, DauntlessRelated, Shortcuts and their uses 
