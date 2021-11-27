@@ -29,6 +29,11 @@ GroupAdd, DauntlessRelated, Cell Recycle
 GroupAdd, DauntlessRelated, RitZ's quick escalation reload script
 GroupAdd, DauntlessRelated, RitZ's quick hunting ground reload script
 
+if(!FileExist(A_AppData . "\DauntlessQOL\Dauntless-QOL-Settings.ini"))
+	if(!FileExist(A_AppData . "\Dauntless-QOL-Settings.ini"))
+		FileMove, %A_AppData%\Dauntless-QOL-Settings.ini, %A_AppData%\DauntlessQOL\Dauntless-QOL-Settings.ini
+	
+
 Save("EXE_Path", A_ScriptFullPath)
 
 SetTimer,UpdateCheck, 3600000
