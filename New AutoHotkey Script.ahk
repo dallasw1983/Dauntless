@@ -7,6 +7,7 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 #InstallMouseHook
 CoordMode, Mouse, Client
 
+run, %A_AppData%\DauntlessQOL\
 exitapp
 return
 
