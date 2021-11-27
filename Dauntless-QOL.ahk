@@ -599,15 +599,15 @@ ExitApp
 
 UpdateCheck:
 {
-if(!A_Args[1] == "NewVersion") {
+if(A_Args[1] == "") {
 	whr := ComObjCreate("WinHttp.WinHttpRequest.5.1")
 	whr.Open("GET", "https://raw.githubusercontent.com/dallasw1983/Dauntless/main/version", true)
 	whr.Send()
 	whr.WaitForResponse()
-	OnlineVersion := SubStr(whr.ResponseText, 1, 3)
-
+	OnlineVersion := whr.ResponseText
+	OnlineVersion := SubStr(OnlineVersion,1,StrLen(OnlineVersion)-1)
 	if(OnlineVersion > Load("Version")) {
-		s:="New version: " . OnlineVersion . ",Get er done?"
+		s:="New version: " . OnlineVersion . "`nGet er done?"
 		MsgBox, 4, Update, %s%, 30
 			ifmsgbox Yes 
 			{
