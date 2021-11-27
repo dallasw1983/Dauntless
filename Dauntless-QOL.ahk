@@ -17,8 +17,10 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 CoordMode, Mouse, Client
 
 tmp:=Load("Version")
-Menu, Tray, NoDefault
-Menu, Tray, NoStandard
+if(A_IsCompiled) {
+	Menu, Tray, NoDefault
+	Menu, Tray, NoStandard
+}
 Menu, Tray, Add, Check for update Ver%tmp%, UpdateCheckMenu
 Menu, Tray, Add  ; Creates a separator line.
 Menu, Tray, Add,Reload,ReloadApp
@@ -30,9 +32,10 @@ GroupAdd, DauntlessRelated, RitZ's quick escalation reload script
 GroupAdd, DauntlessRelated, RitZ's quick hunting ground reload script
 
 if(!FileExist(A_AppData . "\DauntlessQOL\Dauntless-QOL-Settings.ini"))
-	if(!FileExist(A_AppData . "\Dauntless-QOL-Settings.ini"))
+	if(FileExist(A_AppData . "\Dauntless-QOL-Settings.ini"))
 		FileMove, %A_AppData%\Dauntless-QOL-Settings.ini, %A_AppData%\DauntlessQOL\Dauntless-QOL-Settings.ini
 	
+pause
 
 Save("EXE_Path", A_ScriptFullPath)
 
