@@ -18,7 +18,7 @@ CoordMode, Mouse, Client
 
 Menu, Tray, NoDefault
 Menu, Tray, NoStandard
-Menu, Tray, Add, Check for update, UpdateCheck
+Menu, Tray, Add, Check for update, UpdateCheckMenu
 Menu, Tray, Add  ; Creates a separator line.
 Menu, Tray, Add,Reload,ReloadApp
 Menu, Tray, Add,Exit,QuitApp
@@ -577,6 +577,11 @@ return
     Return 
 ;Subs
 
+UpdateCheckMenu:
+tmp := 1
+GoSub, UpdateCheck
+return
+
 ReloadApp:
 Reload
 
@@ -607,6 +612,10 @@ if(!A_Args[1] == "NewVersion") {
 			}
 		}
 	}
+if(tmp) {
+	Msgbox,0,Update Checked, No New updates
+	tmp=
+}
 return
 }
 
