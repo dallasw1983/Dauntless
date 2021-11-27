@@ -612,7 +612,7 @@ if(A_Args[1] == "") {
 			ifmsgbox Yes 
 			{
 				UrlDownloadToFile, https://github.com/dallasw1983/Dauntless/raw/main/Dauntless-QOL.exe, %A_AppData%/Dauntless-QOL-%OnlineVersion%.exe
-				if(!FileExist(%A_Startup% . "\Dauntless-Runner.exe")) {
+				if(!FileExist(A_Startup . "\Dauntless-Runner.exe")) {
 					FileInstall, Dauntless-Runner.exe, %A_Startup%\Dauntless-Runner.exe	
 				}
 				Run, %A_Startup%\Dauntless-Runner.exe OnlineUpdated
