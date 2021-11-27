@@ -25,7 +25,7 @@ Menu, Tray, Add, Check for update Ver%tmp%, UpdateCheckMenu
 Menu, Tray, Add  ; Creates a separator line.
 Menu, Tray, Add,Reload,ReloadApp
 Menu, Tray, Add,Exit,QuitApp
-
+tmp=
 GroupAdd, DauntlessRelated, Shortcuts and their uses 
 GroupAdd, DauntlessRelated, Cell Recycle
 GroupAdd, DauntlessRelated, RitZ's quick escalation reload script
