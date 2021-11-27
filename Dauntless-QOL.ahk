@@ -15,52 +15,52 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 #InstallKeybdHook
 #InstallMouseHook
 CoordMode, Mouse, Client
-Version := 2
 
-GroupAdd, DauntlessRelated, Dauntless
+Menu, Tray, NoDefault
+Menu, Tray, NoStandard
+Menu, Tray, Add, Check for update, UpdateCheck
+Menu, Tray, Add  ; Creates a separator line.
+Menu, Tray, Add,Reload,ReloadApp
+Menu, Tray, Add,Exit,QuitApp
+
 GroupAdd, DauntlessRelated, Shortcuts and their uses 
 GroupAdd, DauntlessRelated, Cell Recycle
 GroupAdd, DauntlessRelated, RitZ's quick escalation reload script
 GroupAdd, DauntlessRelated, RitZ's quick hunting ground reload script
 
+Save("EXE_Path", A_ScriptFullPath)
 
-UpdateCheck() 
+SetTimer,UpdateCheck, 3600000
+GoSub, UpdateCheck
 
-UpdateCheck() (
-	whr := ComObjCreate("WinHttp.WinHttpRequest.5.1")
-	whr.Open("GET", "https://www.autohotkey.com/download/1.1/version.txt", true)
-	whr.Send()
-	; Using 'true' above and the call below allows the script to remain responsive.
-	whr.WaitForResponse()
-	version := whr.ResponseText
-	MsgBox % version
-
-return
-)
-if(!Load("Version") == Version) {
-	FileDelete, %A_ApPData%\Dauntless-Chat.png
-	FileDelete, %A_ApPData%\Dauntless-Emoji.png
-	FileDelete, %A_ApPData%\Dauntless-Emote.png
-	FileDelete, %A_ApPData%\Dauntless-CellBurn.png
-	
-	FileInstall, Dauntless-Chat.png, %A_ApPData%\Dauntless-Chat.png
-	FileInstall, Dauntless-Emoji.png, %A_ApPData%\Dauntless-Emoji.png
-	FileInstall, Dauntless-Emote.png, %A_ApPData%\Dauntless-Emote.png
-	FileInstall, Dauntless-CellBurn.png, %A_ApPData%\Dauntless-CellBurn.png
-	
-	FileGetSize, file_size , %A_ApPData%\Dauntless-Chat.png, K
-	if(file_size == 0) {
-		reload
-	}
-
-	Save("Version", Version)
-}
 
 if(!Load("FirstRun")) {
+	if(!FileExist(A_AppData . "\DauntlessQOL"))
+		FileCreateDir, %A_AppData%\DauntlessQOL
+	Loop, Files, %A_AppData%\DauntlessQOL
+	{
+	if(A_LoopFileExt != "ini")
+		FileDelete, A_LoopFileFullPath
+	}
+	FileDelete, %A_Startup%\Dauntless-Runner.exe
+	
+	FileInstall, images\Dauntless-Chat.png, %A_AppData%\DauntlessQOL\Dauntless-Chat.png
+	FileInstall, images\Dauntless-Emoji.png, %A_AppData%\DauntlessQOL\Dauntless-Emoji.png
+	FileInstall, images\Dauntless-Emote.png, %A_AppData%\DauntlessQOL\Dauntless-Emote.png
+	FileInstall, images\Dauntless-CellBurn.png, %A_AppData%\DauntlessQOL\Dauntless-CellBurn.png
+	
+	FileInstall, Dauntless-Runner.exe, %A_Startup%\Dauntless-Runner.exe
+	
+	FileGetSize, file_size , %A_AppData%\DauntlessQOL\Dauntless-Chat.png, K
+	if(file_size == 0)
+		reload
+}
+
+if(!Load("FirstRun") || A_Args[1] == "NewVersion") {
 	GoSub, HelpScreen
 	Save("FirstRun",1)
 }
-;FileDelete, %A_ApPData%\Dauntless-QOL-Settings.ini
+;FileDelete, %A_AppData%\Dauntless-QOL-Settings.ini
 
 Dauntless_Time_Move := 10000
 Dauntless_Time_Idle := 0
@@ -88,7 +88,7 @@ global EscalationPrivateHunt := False
 !R::Reload
 
 IdleCheck:
-	if(A_TimeIdle > Dauntless_Time_Move && WinExist("Dauntless")) {
+	if(A_TimeIdle > Dauntless_Time_Move && WinExist("Dauntless ahk_class UnrealWindow")) {
 		if(A_TimeIdle - Dauntless_Time_Idle > Dauntless_Time_Move) {
 			WinActivate, Dauntless
 			Send {w down}
@@ -259,6 +259,9 @@ a=Quit this helper
 b=Alt + Shift + Q
 c=To Quit this helper script
 GoSub, GUIPoints
+
+AutoStartChoice := Load("AutoStart")
+Gui,Add,Checkbox,vAutoStartChoice Checked%AutoStartChoice% gAutoStartChoice,Auto Start on CPU bootup?
 
 ; Gui,Main:Tab,4
 
@@ -571,9 +574,48 @@ return
 ; Press Alt + Shift + E to reload private Escalation chosen in the list. Once chosen, the choice is remembered until you close or reload the script. To reload the script do Alt + R.
 !+E::
     ReloadEscalation(True)
-    Return
+    Return 
+;Subs
 
-; Functions
+ReloadApp:
+Reload
+
+QuitApp:
+ExitApp
+
+
+UpdateCheck:
+{
+if(!A_Args[1] == "NewVersion") {
+	whr := ComObjCreate("WinHttp.WinHttpRequest.5.1")
+	whr.Open("GET", "https://raw.githubusercontent.com/dallasw1983/Dauntless/main/version", true)
+	whr.Send()
+	whr.WaitForResponse()
+	OnlineVersion := SubStr(whr.ResponseText, 1, 3)
+
+	if(OnlineVersion > Load("Version")) {
+		s:="New version: " . OnlineVersion . ",Get er done?"
+		MsgBox, 4, Update, %s%, 30
+			ifmsgbox Yes 
+			{
+				UrlDownloadToFile, https://github.com/dallasw1983/Dauntless/raw/main/Dauntless-QOL.exe, %A_AppData%/Dauntless-QOL-%OnlineVersion%.exe
+				if(!FileExist(%A_Startup% . "\Dauntless-Runner.exe")) {
+					FileInstall, Dauntless-Runner.exe, %A_Startup%\Dauntless-Runner.exe	
+				}
+				Run, %A_Startup%\Dauntless-Runner.exe OnlineUpdated
+				exitapp
+			}
+		}
+	}
+return
+}
+
+AutoStartChoice:
+gui,submit,nohide
+Save("AutoStart",AutoStartChoice)
+return
+
+;Functions
 
 
 DoQuickEmote(endCoorX, endCoorY)
@@ -648,15 +690,6 @@ DoQuickEmoji(endCoorX, endCoorY)
 	}
 }
 
-Save(SettingName, SettingValue) {
-IniWrite, %SettingValue%, %A_AppData%\Dauntless-QOL-Settings.ini, Settings, %SettingName%
-return
-}
-Load(SettingName) {
-IniRead, SettingValue, %A_AppData%\Dauntless-QOL-Settings.ini, Settings, %SettingName%, %A_SPACE%
-return % SettingValue
-}
-
 CollectMultipleTimes()
 {
     iterations := 150
@@ -664,17 +697,6 @@ CollectMultipleTimes()
     {
         Interact()
     }
-}
-
-DoEmote(startCoorX, startCoorY, endCoorX, endCoorY)
-{
-	BlockInput, On
-	BlockInput, MouseMove
-    Send {%EmoteKeybind% down}
-    MouseClickDrag, L, startCoorX, startCoorY, endCoorX, endCoorY
-    Send {%EmoteKeybind% up}
-	BlockInput, Off
-	BlockInput, MouseMoveOff
 }
 
 DoCuriosityEmote(startCoorX1, startCoorY1, endCoorX1, endCoorY1, startCoorX2, startCoorY2, endCoorX2, endCoorY2)
