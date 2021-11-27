@@ -15,7 +15,7 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 #InstallKeybdHook
 #InstallMouseHook
 CoordMode, Mouse, Client
-Version := 1
+Version := 2
 
 GroupAdd, DauntlessRelated, Dauntless
 GroupAdd, DauntlessRelated, Shortcuts and their uses 
@@ -23,6 +23,20 @@ GroupAdd, DauntlessRelated, Cell Recycle
 GroupAdd, DauntlessRelated, RitZ's quick escalation reload script
 GroupAdd, DauntlessRelated, RitZ's quick hunting ground reload script
 
+
+UpdateCheck() 
+
+UpdateCheck() (
+	whr := ComObjCreate("WinHttp.WinHttpRequest.5.1")
+	whr.Open("GET", "https://www.autohotkey.com/download/1.1/version.txt", true)
+	whr.Send()
+	; Using 'true' above and the call below allows the script to remain responsive.
+	whr.WaitForResponse()
+	version := whr.ResponseText
+	MsgBox % version
+
+return
+)
 if(!Load("Version") == Version) {
 	FileDelete, %A_ApPData%\Dauntless-Chat.png
 	FileDelete, %A_ApPData%\Dauntless-Emoji.png
@@ -80,6 +94,10 @@ IdleCheck:
 			Send {w down}
 			sleep 350
 			Send {w up}
+			sleep 350
+			Send {s down}
+			sleep 350
+			Send {s up}
 			Dauntless_Time_Idle := A_TimeIdle
 		}
 	}
