@@ -34,8 +34,6 @@ GroupAdd, DauntlessRelated, RitZ's quick hunting ground reload script
 if(!FileExist(A_AppData . "\DauntlessQOL\Dauntless-QOL-Settings.ini"))
 	if(FileExist(A_AppData . "\Dauntless-QOL-Settings.ini"))
 		FileMove, %A_AppData%\Dauntless-QOL-Settings.ini, %A_AppData%\DauntlessQOL\Dauntless-QOL-Settings.ini
-	
-pause
 
 Save("EXE_Path", A_ScriptFullPath)
 
