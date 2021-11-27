@@ -16,9 +16,10 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 #InstallMouseHook
 CoordMode, Mouse, Client
 
+tmp:=Load("Version")
 Menu, Tray, NoDefault
 Menu, Tray, NoStandard
-Menu, Tray, Add, Check for update, UpdateCheckMenu
+Menu, Tray, Add, Check for update Ver%tmp%, UpdateCheckMenu
 Menu, Tray, Add  ; Creates a separator line.
 Menu, Tray, Add,Reload,ReloadApp
 Menu, Tray, Add,Exit,QuitApp
